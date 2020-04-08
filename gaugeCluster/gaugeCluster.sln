@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gaugeCluster", "gaugeCluster.csproj", "{3EFA07A7-F1A1-8145-1065-985FAC260218}"
 EndProject
 Global
