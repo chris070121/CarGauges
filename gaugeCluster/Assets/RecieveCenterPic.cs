@@ -35,6 +35,21 @@ public class RecieveCenterPic : MonoBehaviour {
             emergencyBrake.text = _emergencyBrake;
             lightSymbol.text = _lightSymbol;
             reverseSymbol.text = _reverseSymbol;
+            if(_brightnessUp ==  true)
+            {
+                Color temp = brightnessControllerImage.color;
+                temp.a = 0.0f;
+                brightnessControllerImage.color = temp;
+            }
+            else
+            {
+                Color temp = brightnessControllerImage.color;
+                temp.a = 1.0f;
+                brightnessControllerImage.color = temp;
+
+            }
+
+
         }
     }
 
@@ -49,12 +64,14 @@ public class RecieveCenterPic : MonoBehaviour {
     public Text emergencyBrake;
     public Text lightSymbol;
     public Text reverseSymbol;
+    public Image brightnessControllerImage;
     string _seatBelt;
     string _leftSignal;
     string _rightSignal;
     string _emergencyBrake;
     string _lightSymbol;
     string _reverseSymbol;
+    bool _brightnessUp = false;
 
 
     byte[] bytes;
@@ -106,6 +123,17 @@ public class RecieveCenterPic : MonoBehaviour {
                 else if(result[0].Contains("EmergencyBrake"))
                 {
                    _emergencyBrake = "EmergencyBrake = " + result[1];
+                }
+                else if (result[0].Contains("BrightnessUp"))
+                {
+                    if (result[1].Contains("true"))
+                    {
+                        _brightnessUp = true;
+                    }
+                    else
+                    {
+                        _brightnessUp = false;
+                    }
                 }
             }
        
