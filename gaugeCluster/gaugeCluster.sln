@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gaugeCluster", "gaugeCluster.csproj", "{3EFA07A7-F1A1-8145-1065-985FAC260218}"
+# Visual Studio 16
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{4B8B4C83-04DC-908A-9304-BEAD936EC0AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{5AECE190-939E-DF06-802D-F38EF2EA97E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +11,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3EFA07A7-F1A1-8145-1065-985FAC260218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3EFA07A7-F1A1-8145-1065-985FAC260218}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3EFA07A7-F1A1-8145-1065-985FAC260218}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3EFA07A7-F1A1-8145-1065-985FAC260218}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B8B4C83-04DC-908A-9304-BEAD936EC0AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B8B4C83-04DC-908A-9304-BEAD936EC0AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B8B4C83-04DC-908A-9304-BEAD936EC0AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B8B4C83-04DC-908A-9304-BEAD936EC0AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AECE190-939E-DF06-802D-F38EF2EA97E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AECE190-939E-DF06-802D-F38EF2EA97E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AECE190-939E-DF06-802D-F38EF2EA97E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AECE190-939E-DF06-802D-F38EF2EA97E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

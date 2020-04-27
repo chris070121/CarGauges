@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor.UI;
+
 using UnityEngine.UI;
 using System.Collections;
 using System.Threading;
@@ -41,7 +41,8 @@ public class NeedleTemp : MonoBehaviour {
         }
         else
         {
-            needle.eulerAngles = new Vector3(0, 0, GetSpeedRotation());
+            float step = 30 * Time.deltaTime;
+            needle.eulerAngles = Vector3.MoveTowards(needle.eulerAngles, new Vector3(0,0,GetSpeedRotation()), step);
         }
 	}
 
