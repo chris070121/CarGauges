@@ -4,6 +4,7 @@ using System.Threading;
 using System.IO.Ports;
 using System;
 using UnityEngine.UI;
+using Coding4Fun.Obd.ObdManager;
 
 public class Master : MonoBehaviour {
     public NeedleTemp tachNeedleScript;
@@ -14,25 +15,27 @@ public class Master : MonoBehaviour {
     public Image brightnessControllerImage;
     public Image brightnessControllerImage2;
     public Button resteButton;
+    public Text textBox;
     private TimeSpan morning = new TimeSpan(6, 0, 0); //10 o'clock
     private TimeSpan night = new TimeSpan(17, 0, 0); //12 o'clock
     int morningTime;
     int eveningTime;
     bool _brightnessUp;
-    private SerialPort stream = new SerialPort("COM4", 9600); //Set the port (com4) and the baud rate (9600, is standard on most devices)
-    private string arduinoValue = "";
-    Thread a;
+    private int count = 0;
+
     // Use this for initialization
     void Start () {
         Application.targetFrameRate = 30;
         Display.displays[1].Activate();
         Display.displays[2].Activate();
-        //resteButton.onClick +=  ;
+
         try
         {
-            //stream.Open();
-            a = new Thread(ParseArduinoValue);
-            a.Start();
+
+            obd = new ObdDevice();
+            obd.ObdChanged += obd_ObdChanged;
+            obd.Connect("COM6", 115200, ObdDevice.UnknownProtocol, true);
+
             GetSettings();
         }
         catch(Exception e)
@@ -40,6 +43,7 @@ public class Master : MonoBehaviour {
             Debug.Log(e.Message);
         }
     }
+   
     private void GetSettings()
     {
         string[] lines = System.IO.File.ReadAllLines(@"C:\Users\chris\Desktop\test\Car_SupportingProgram\webCamTest\webCamTest\bin\Debug\Settings.txt");
@@ -63,7 +67,8 @@ public class Master : MonoBehaviour {
 
     void OnDestroy()
     {
-        a.Abort();
+       // obd.t.Abort();
+       // a.Abort();
     }
     private void CheckTime()
     {
@@ -80,15 +85,17 @@ public class Master : MonoBehaviour {
     }
     // Update is called once per frame
     void Update () {
-        if (stream.IsOpen)
-        {
+
             GetRPM();
             GetSpeed();
+        if (count < 20)
+        {
             GetFuel();
             GetEngTemp();
             GetVoltageTemp();
             CheckTime();
-            Debug.Log(_brightnessUp);
+            GetOilTemp();
+
             if (_brightnessUp == true)
             {
                 Color temp = brightnessControllerImage.color;
@@ -110,23 +117,21 @@ public class Master : MonoBehaviour {
                 brightnessControllerImage2.color = temp;
 
             }
+
+            count = 0;
         }
         else
         {
-            try
-            {
-                stream = new SerialPort("COM4", 9600);
-                stream.Open();
-            }
-            catch (Exception ex)
-            { }
+            count++;
         }
+           
     }
 
   
     public void GetRPM()
     {
-        tachNeedleScript.speed = RPM;
+        float x = RPM /1f;
+        tachNeedleScript.speed = x;
         tachNeedleScript.numberForTextLabel.text = (Convert.ToInt32(RPM)).ToString();
     }
 
@@ -150,61 +155,34 @@ public class Master : MonoBehaviour {
 
     public void GetVoltageTemp()
     {
-        voltageTempNeedleScript.speed = VOLTAGE_TEMP + .5f;
-        voltageTempNeedleScript.numberForTextLabel.text = (VOLTAGE_TEMP+.5f).ToString();
+        voltageTempNeedleScript.speed = VOLTAGE_TEMP;
+        voltageTempNeedleScript.numberForTextLabel.text = (VOLTAGE_TEMP).ToString();
 
     }
 
+    public void GetOilTemp()
+    {
+    }
 
-    private float RPM;
+    private int RPM;
     private float MPH;
     private float ENG_TEMP;
     private float VOLTAGE_TEMP;
     private float FUEL;
-    private void ParseArduinoValue()
-    {
-        while (true)
-        {
-            if (stream.IsOpen)
-            {
-                arduinoValue = stream.ReadLine();
-            }
-            if (arduinoValue != "")
-            {
-                // Debug.Log(arduinoValue);
-                string[] split = arduinoValue.Split('=');
-                if (split.Length > 1)
-                {
-                    float value = 0;
-                    float.TryParse(split[1], out value);
-                    if (arduinoValue.Contains("RPM"))
-                    {
-                        RPM = value;
-                    }
-                    if (arduinoValue.Contains("speed"))
-                    {
-                        //have to convert from kph to mph
-                        float valueMPH = value / 1.609f;
-                        MPH = valueMPH;
-                    }
-                    if (arduinoValue.Contains("voltage"))
-                    {
-                        VOLTAGE_TEMP = value;
-                    }
-                    if (arduinoValue.Contains("coolant"))
-                    {
-                        //convert from celseius to fahrenheit
-                        float valueF = (value * 9 / 5) + 32;
-                        ENG_TEMP = valueF;
-                    }
-                    if (arduinoValue.Contains("Fuel"))
-                    {
-                        //value is a percentage
-                        FUEL = value;
-                    }
-                }
-            }
-        }
-    }
+    static ObdDevice obd;
+    private float OIL_TEMP;
 
+    private void obd_ObdChanged(object sender, ObdChangedEventArgs e)
+    {
+        double gallons = ((double)e.ObdState.FuelLevel / 100) * 19;
+    
+        FUEL  = e.ObdState.FuelLevel;
+        RPM = e.ObdState.Rpm;
+        VOLTAGE_TEMP = (float)e.ObdState.BatteryVoltage;
+        double y = e.ObdState.MilesPerHour;
+        MPH= (float)y;
+        bool temp = e.ObdState.MilLightOn;
+        ENG_TEMP = e.ObdState.EngineCoolantTemperature;
+        OIL_TEMP = e.ObdState.OilTemperature;
+    }
 }

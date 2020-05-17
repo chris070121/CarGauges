@@ -18,6 +18,8 @@ public class NeedleTemp : MonoBehaviour {
     public Transform parentTransform;
     public Text numberForTextLabel;
     public bool showMarkers;
+    public bool adjustNeedleSpeed;
+    private float oldSpeed = 0f;
 
     // Use this for initialization
     void Start () {
@@ -41,8 +43,24 @@ public class NeedleTemp : MonoBehaviour {
         }
         else
         {
-            float step = 30 * Time.deltaTime;
+            float step = 30;
+
+            if (adjustNeedleSpeed == true)
+            {
+                float result = Mathf.Abs(speed - oldSpeed);
+                Debug.Log(result);
+                if (result > 1.2 || speed == 0)
+                {
+                    step = 40 * Time.deltaTime;
+                }
+                else
+                {
+                    step = 12 * Time.deltaTime;
+                }
+                Debug.Log(result);
+            }
             needle.eulerAngles = Vector3.MoveTowards(needle.eulerAngles, new Vector3(0,0,GetSpeedRotation()), step);
+            oldSpeed = speed;
         }
 	}
 
