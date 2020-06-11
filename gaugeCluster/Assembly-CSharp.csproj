@@ -62,7 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ConnectionChangedEventArgs.cs" />
+    <Compile Include="Assets\CurvedLinePoint.cs" />
+    <Compile Include="Assets\CurvedLineRenderer.cs" />
     <Compile Include="Assets\Enums.cs" />
+    <Compile Include="Assets\LineSmoother.cs" />
     <Compile Include="Assets\Master.cs" />
     <Compile Include="Assets\NeedleTemp.cs" />
     <Compile Include="Assets\ObdChangedEventArgs.cs" />

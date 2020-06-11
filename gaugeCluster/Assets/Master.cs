@@ -22,28 +22,33 @@ public class Master : MonoBehaviour {
     int eveningTime;
     bool _brightnessUp;
     private int count = 0;
-
+    public bool testingInUnity = false;
     // Use this for initialization
     void Start () {
         Application.targetFrameRate = 30;
-        Display.displays[1].Activate();
-        Display.displays[2].Activate();
-
-        try
+        if (Display.displays.Length > 1)
         {
-
-            obd = new ObdDevice();
-            obd.ObdChanged += obd_ObdChanged;
-            obd.Connect("COM6", 115200, ObdDevice.UnknownProtocol, true);
-
-            GetSettings();
+            Display.displays[1].Activate();
+            Display.displays[2].Activate();
         }
-        catch(Exception e)
+        if (testingInUnity == false)
         {
-            Debug.Log(e.Message);
+            try
+            {
+
+                obd = new ObdDevice();
+                obd.ObdChanged += obd_ObdChanged;
+                obd.Connect("COM6", 115200, ObdDevice.UnknownProtocol, true);
+
+                GetSettings();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
         }
     }
-   
+  
     private void GetSettings()
     {
         string[] lines = System.IO.File.ReadAllLines(@"C:\Users\chris\Desktop\test\Car_SupportingProgram\webCamTest\webCamTest\bin\Debug\Settings.txt");
@@ -64,10 +69,14 @@ public class Master : MonoBehaviour {
         night = new TimeSpan(eveningTime, 0, 0); //12 o'clock
     }
 
-
-    void OnDestroy()
+    private void OnDestroy()
     {
-       // obd.t.Abort();
+        obd.thread.Abort();
+
+    }
+    void OnApplicationQuit()
+    {
+        obd.thread.Abort();
        // a.Abort();
     }
     private void CheckTime()
@@ -83,9 +92,14 @@ public class Master : MonoBehaviour {
             _brightnessUp = false;
         }
     }
-    // Update is called once per frame
-    void Update () {
-
+    private int testingCOunter = 0;
+    void Update ()
+    {
+        if(testingInUnity == true)
+        {
+            testingCOunter++;
+            UpdateGui();
+        }
             GetRPM();
             GetSpeed();
         if (count < 20)
@@ -142,10 +156,10 @@ public class Master : MonoBehaviour {
     }
     public void GetFuel()
     {
-        fuelNeedleScript.speed = FUEL;
         float a = FUEL / 100;
         float b = 19 * a;
         fuelNeedleScript.numberForTextLabel.text = (b).ToString();
+        fuelNeedleScript.speed = b;
     }
     public void GetEngTemp()
     {
@@ -184,5 +198,16 @@ public class Master : MonoBehaviour {
         bool temp = e.ObdState.MilLightOn;
         ENG_TEMP = e.ObdState.EngineCoolantTemperature;
         OIL_TEMP = e.ObdState.OilTemperature;
+    }
+
+    private void UpdateGui()
+    {
+        FUEL = testingCOunter;
+        RPM = testingCOunter;
+        VOLTAGE_TEMP = testingCOunter;
+        MPH = testingCOunter;
+
+        ENG_TEMP = testingCOunter;
+        OIL_TEMP = testingCOunter;
     }
 }
